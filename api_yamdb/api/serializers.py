@@ -45,7 +45,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
-        review = None
+        review = []
         try:
             review = Review.objects.create(**validated_data)
         except IntegrityError:
