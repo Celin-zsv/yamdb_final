@@ -45,13 +45,18 @@ class ReviewSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
+        # try:
+        #     review = Review.objects.create(**validated_data)
+        # except IntegrityError:
+        #     raise serializers.ValidationError(
+        #         {'detail': 'Вы можете оставить только один отзыв.'})
+        # return review
         review = Review.objects.create(**validated_data)
-        try:
-            review = Review.objects.create(**validated_data)
-        except IntegrityError:
+        if review:
+            return review
+        else:
             raise serializers.ValidationError(
                 {'detail': 'Вы можете оставить только один отзыв.'})
-        return review
 
 
 class CommentSerializer(serializers.ModelSerializer):
