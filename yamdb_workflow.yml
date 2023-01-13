@@ -20,7 +20,9 @@ jobs:
         # установка flake8 и его плагинов
         pip install flake8 pep8-naming flake8-broken-line flake8-return flake8-isort
         # установка зависимостей
-        pip install -r requirements.txt 
+        cd api_yamdb/
+        pip install -r requirements.txt
+        cd ..
 
     - name: Test with pytest
       run: |
@@ -58,6 +60,7 @@ jobs:
           # Пуш образа в Docker Hub 
           uses: docker/build-push-action@v2 
           with:
+            context: ./api_yamdb/
             push: true
             tags: zelenkovskii/yamdb_final:latest
   deploy:
@@ -78,8 +81,9 @@ jobs:
           #   sudo docker stop $(sudo docker ps -a -q)
           #   sudo docker run --rm -d -p 5000:5000 zelenkovskii/yamdb_final
           script: |
+            sudo docker pull zelenkovskii/yamdb_final
             sudo docker-compose stop
-            sudo docker-compose rm web
+            sudo docker-compose rm web            
             touch .env
             echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
             echo DB_NAME=${{ secrets.DB_NAME }} >> .env
@@ -87,9 +91,9 @@ jobs:
             echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
             echo DB_HOST=${{ secrets.DB_HOST }} >> .env
             echo DB_PORT=${{ secrets.DB_PORT }} >> .env
-            sudo docker-compose up -d   
+            sudo docker-compose up -d    
             sudo docker compose exec web python manage.py migrate
-            sudo docker compose exec web python manage.py collectstatic --no-input                    
+            sudo docker compose exec web python manage.py collectstatic --no-input                   
   send_message:
     runs-on: ubuntu-latest
     needs: deploy
