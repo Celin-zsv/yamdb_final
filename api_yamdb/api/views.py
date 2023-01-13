@@ -1,25 +1,25 @@
+from api.filters import TitleFilter
+from api.permissions import (IsAdminOnly, IsAdminOrReadOnly,
+                             IsAuthorAdminModeratorOrReadOnly)
+from api.serializers import (CategorySerializer, CommentSerializer,
+                             GenresSerializer, ReviewSerializer,
+                             TitlesListSerializer, TitlesSerializer,
+                             UserSerializer, UserSignupSerializer)
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.db.models import Avg
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, status, mixins, viewsets
-from rest_framework.decorators import api_view, action
+from rest_framework import filters, mixins, status, viewsets
+from rest_framework.decorators import action, api_view
 from rest_framework.generics import get_object_or_404
-from rest_framework.pagination import (PageNumberPagination,
-                                       LimitOffsetPagination)
+from rest_framework.pagination import (LimitOffsetPagination,
+                                       PageNumberPagination)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-
-from api.filters import TitleFilter
-from api.permissions import (IsAuthorAdminModeratorOrReadOnly,
-                             IsAdminOrReadOnly, IsAdminOnly)
-from api.serializers import (CategorySerializer, CommentSerializer,
-                             GenresSerializer, ReviewSerializer,
-                             TitlesSerializer, TitlesListSerializer,
-                             UserSerializer, UserSignupSerializer)
-from api_yamdb import settings
 from reviews.models import Category, Genre, Review, Title, User
+
+from api_yamdb import settings
 
 
 class SendConfirmationCode(mixins.CreateModelMixin,

@@ -1,9 +1,8 @@
 from datetime import datetime
+
 from django.db import IntegrityError
 from rest_framework import serializers
-
-from reviews.models import (
-    Category, Genre, Review, Title, User, Comment)
+from reviews.models import Category, Comment, Genre, Review, Title, User
 
 
 class UserSignupSerializer(serializers.ModelSerializer):
