@@ -48,7 +48,7 @@ class SendConfirmationCode(mixins.CreateModelMixin,
                 serializer.data,
                 status=status.HTTP_200_OK
             )
-        elif User.objects.filter(
+        if User.objects.filter(
                 email=email,
                 username=serializer.data.get('username')).exists():
             self.send_confirmation_code_email(
@@ -75,11 +75,10 @@ def get_token(request):
         return Response(
             {'token': str(RefreshToken.for_user(user).access_token)}
         )
-    else:
-        return Response(
-            {'confirmation_code': 'Error'},
-            status=status.HTTP_400_BAD_REQUEST
-        )
+    return Response(
+        {'confirmation_code': 'Error'},
+        status=status.HTTP_400_BAD_REQUEST
+    )
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
@@ -135,9 +134,9 @@ class UserViewSet(viewsets.ModelViewSet):
             if serializer.is_valid():
                 serializer.save(role=user.role)
                 return Response(serializer.data, status=status.HTTP_200_OK)
-            return Response(
-                serializer.errors, status=status.HTTP_400_BAD_REQUEST
-            )
+        return Response(
+            serializer.errors, status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 class CreateRetrieveDestroyViewSet(mixins.CreateModelMixin,
