@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from django.db import IntegrityError
+# from django.db import IntegrityError
 from rest_framework import serializers
 from reviews.models import Category, Comment, Genre, Review, Title, User
 
@@ -54,9 +54,8 @@ class ReviewSerializer(serializers.ModelSerializer):
         review = Review.objects.create(**validated_data)
         if review:
             return review
-        else:
-            raise serializers.ValidationError(
-                {'detail': 'Вы можете оставить только один отзыв.'})
+        raise serializers.ValidationError(
+            {'detail': 'Вы можете оставить только один отзыв.'})
 
 
 class CommentSerializer(serializers.ModelSerializer):
