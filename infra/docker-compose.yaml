@@ -14,8 +14,8 @@ services:
     env_file:
       - ./.env
   web:
-    image: zelenkovskii/yamdb_final:latest
-    # build: ../api_yamdb/
+    # image: zelenkovskii/yamdb_final:latest
+    build: ../api_yamdb/
     restart: always
     volumes:
       # Контейнер web будет работать с данными, хранящиеся в томе static_value, 
