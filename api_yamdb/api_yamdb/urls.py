@@ -25,7 +25,11 @@ urlpatterns = [
         TemplateView.as_view(template_name='redoc.html'),
         name='redoc'
     ),
-    path(
-        'api-auth/',
-        include('rest_framework.urls', namespace='rest_framework')),
+    # path(
+    #     'api-auth/',
+    #     include('rest_framework.urls', namespace='rest_framework')),
+]
+
+urlpatterns += [
+    path('api-auth/', include('rest_framework.urls')),
 ]
