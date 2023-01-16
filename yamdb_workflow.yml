@@ -1,4 +1,4 @@
-name: Django-app workflow
+name: yamdb_final workflow
 
 on: [push]
 
@@ -12,31 +12,20 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: 3.7
-
     - name: Install dependencies
       run: | 
-        # обновление pip
         python -m pip install --upgrade pip 
-        # установка flake8 и его плагинов
         pip install flake8 pep8-naming flake8-broken-line flake8-return flake8-isort
-        # установка зависимостей
         cd api_yamdb/
         pip install -r requirements.txt
         cd ..
-
     - name: Test with pytest
       run: |
-        # запуск проверки проекта по pytest
         pytest
-
     - name: Test with flake8 and django tests
       run: |
-        # запуск проверки проекта по flake8
         python -m flake8
-        # перейти в папку, содержащую manage.py — 
-        #<корневая_папка_infra_actions>/<папка_проекта>/manage.py
         cd api_yamdb/
-        # запустить написанные разработчиком тесты
         python manage.py test
 
   build_and_push_to_docker_hub:
@@ -45,19 +34,15 @@ jobs:
       needs: tests
       steps:
         - name: Check out the repo
-          # Проверка доступности репозитория Docker Hub для workflow
           uses: actions/checkout@v2 
         - name: Set up Docker Buildx
-          # Вызов сборщика контейнеров docker
           uses: docker/setup-buildx-action@v1 
-        - name: Login to Docker 
-          # Запуск скрипта авторизации на Docker Hub
+        - name: Login to Docker
           uses: docker/login-action@v1 
           with:
             username: ${{ secrets.DOCKER_USERNAME }} 
             password: ${{ secrets.DOCKER_PASSWORD }}
         - name: Push to Docker Hub
-          # Пуш образа в Docker Hub 
           uses: docker/build-push-action@v2 
           with:
             context: ./api_yamdb/
@@ -73,13 +58,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
-          passphrase: ${{ secrets.PASSPHRASE }} # Если ваш ssh-ключ защищён фразой-паролем
-          # script: |
-          #   # Выполняет pull образа с DockerHub
-          #   sudo docker pull zelenkovskii/yamdb_final
-          #   #остановка всех контейнеров
-          #   sudo docker stop $(sudo docker ps -a -q)
-          #   sudo docker run --rm -d -p 5000:5000 zelenkovskii/yamdb_final
+          passphrase: ${{ secrets.PASSPHRASE }}
           script: |
             sudo docker pull zelenkovskii/yamdb_final
             sudo docker-compose stop
@@ -91,9 +70,7 @@ jobs:
             echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
             echo DB_HOST=${{ secrets.DB_HOST }} >> .env
             echo DB_PORT=${{ secrets.DB_PORT }} >> .env
-            sudo docker-compose up -d    
-            sudo docker compose exec web python manage.py migrate
-            sudo docker compose exec web python manage.py collectstatic --no-input                   
+            sudo docker-compose up -d              
   send_message:
     runs-on: ubuntu-latest
     needs: deploy
@@ -103,11 +80,8 @@ jobs:
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
-        # message: ${{ github.workflow }} успешно выполнен!
         message: |
           ${{ github.actor }} created commit:
-          Commit message: ${{ github.event.commits[0].message }}
-          
-          Repository: ${{ github.repository }}
-          
+          Commit message: ${{ github.event.commits[0].message }}          
+          Repository: ${{ github.repository }}          
           See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
