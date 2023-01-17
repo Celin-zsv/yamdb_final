@@ -85,8 +85,8 @@ Author | Sergei Zelenkovskii, svzelenkovskii@gmail.com
       * запустить сервер ```gunicorn```: ```CMD ["gunicorn", "api_yamdb.wsgi:application", "--bind", "0:8000" ]```
       * развернётся проект, запущенный через Gunicorn с базой данных Postgres
 * редактировать ```nginx/default.conf```:
- * изменить ``` server_name <IP удаленной виртуальной машины> ```
- * дополнить ``` location / ``` :
+  * изменить ``` server_name <IP удаленной виртуальной машины> ```
+  * дополнить ``` location / ``` :
 ```
     location / {
   proxy_set_header Host $host;
