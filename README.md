@@ -120,5 +120,5 @@ http://158.160.38.1/api/v1/ - REST API
 http://158.160.38.1/admin/  - админ панель  
 http://158.160.38.1/redoc/  - документация
 
-commit v19_5
+commit v19_6
 @zsv
